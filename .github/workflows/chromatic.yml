@@ -35,7 +35,7 @@ jobs:
         uses: chromaui/action@latest
         with:
           # Grab this from the Chromatic manage page
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          projectToken: chpt_447786192ee2aac
 
       - name: Comment on PR
         if: success()
