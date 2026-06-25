@@ -39,7 +39,7 @@ jobs:
 
       - name: Comment on PR
         if: success()
-        uses: thollander/actions-comment-pull-request@v3
+        uses: mshick/add-pr-comment@v3
         with:
           message: |
             ## Storybook Preview
