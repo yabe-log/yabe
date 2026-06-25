@@ -1,0 +1,48 @@
+name: 'Chromatic Publish on PR'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    branches:
+      - main
+
+jobs:
+  chromatic:
+    if: contains(github.event.pull_request.labels.*.name, 'components')
+    name: 'Chromatic Publish'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+        env:
+          CHROMATIC_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          CHROMATIC_SHA: ${{ github.event.pull_request.head.sha || github.ref }}
+          CHROMATIC_SLUG: ${{ github.repository }}
+    
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.9
+        with:
+          run_install: true
+
+      - name: Publish to Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          # Grab this from the Chromatic manage page
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+
+      - name: Comment on PR
+        if: success()
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            ## Storybook Preview
+            [View Storybook](${{ steps.chromatic.outputs.storybookUrl }})
+            [View Chromatic](${{ steps.chromatic.outputs.buildUrl }})
