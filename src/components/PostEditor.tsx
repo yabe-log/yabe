@@ -1,6 +1,6 @@
 'use client'
-import { useMemo } from 'react'
-import YooptaEditor, { createYooptaEditor, type PluginElementRenderProps, type YooptaContentValue } from '@yoopta/editor'
+import { useMemo, type ComponentPropsWithRef } from 'react'
+import YooptaEditor, { createYooptaEditor, type PluginElementRenderProps, type YooptaContentValue, type YooptaEditorProps } from '@yoopta/editor'
 import Accordion from '@yoopta/accordion'
 import Blockquote from '@yoopta/blockquote'
 import Callout from '@yoopta/callout'
@@ -21,6 +21,7 @@ import TableOfContents from '@yoopta/table-of-contents'
 import Video from '@yoopta/video'
 import { Bold, Italic, Underline, Strike, CodeMark, Highlight } from '@yoopta/marks'
 import { FloatingToolbar, FloatingBlockActions, SlashCommandMenu } from '@yoopta/ui'
+import { cn } from '@/utils/cn'
 
 // TODO: setup upload option for File, Image and Video plugin https://docs.yoopta.dev/plugins/file
 const plugins = [Accordion, Blockquote, Callout, Code, Divider, Embed, Emoji, File, HeadingOne.extend({
@@ -90,7 +91,9 @@ const createInitialValue = (editor: ReturnType<typeof createYooptaEditor>): Yoop
   }
 }
 
-export const PostEditor = () => {
+export const PostEditor = ({ className, ...props }: ComponentPropsWithRef<'div'> & {
+  onChange?: YooptaEditorProps['onChange']
+}) => {
   const editor = useMemo(() => {
     const instance = withMath(withEmoji(createYooptaEditor({ plugins: plugins as never, marks })))
     instance.setEditorValue(createInitialValue(instance))
@@ -103,7 +106,11 @@ export const PostEditor = () => {
       // onChange={(value) => console.log(value)}
       placeholder='Type something...'
       autoFocus
-      className='w-full min-h-96 rounded-3xl border border-border bg-background px-5 py-4 shadow-sm'
+      className={cn(
+        'w-full min-h-96 rounded-3xl border border-border bg-background px-5 py-4 shadow-sm',
+        className
+      )}
+      {...props}
     >
       <FloatingToolbar />
       <FloatingBlockActions />
