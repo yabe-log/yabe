@@ -51,6 +51,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "chromatic": "^17.5.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "16.2.9",
     "neostandard": "^0.13.0",
