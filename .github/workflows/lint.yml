@@ -1,0 +1,33 @@
+name: 'Lint'
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: node
+    
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.9
+        with:
+          run_install: true
+
+      - name: Run lint
+        run: pnpm lint
